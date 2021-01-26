@@ -1,0 +1,3 @@
+[submodule "turn-based-shooter-shared"]
+	path = turn-based-shooter-shared
+	url = https://github.com/Chris-F5/turn-based-shooter-shared
