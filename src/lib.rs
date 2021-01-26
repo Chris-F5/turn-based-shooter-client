@@ -1,3 +1,4 @@
+mod canvas;
 mod networking;
 
 use log::{error, info, trace, warn};
@@ -19,12 +20,16 @@ pub fn run() {
 
 struct Game {
     server_connection: ServerConnection,
+    canvas: canvas::Canvas,
 }
 impl Game {
     fn init() -> Game {
         let mut server_connection = ServerConnection::new();
         server_connection.send(ClientPacket::Test(TestRequest::new("bob".to_string())));
-        Game { server_connection }
+        Game {
+            server_connection,
+            canvas: canvas::Canvas::new("canvas"),
+        }
     }
     fn update(&mut self) {
         trace!("update");
@@ -37,9 +42,13 @@ impl Game {
             }
         }
     }
+    fn draw(&mut self) {
+        self.canvas.clear();
+        self.canvas.test_draw();
+    }
     fn game_loop(&mut self) {
         self.update();
-        // TODO: self.draw();
+        self.draw();
     }
     fn start_game_loop(mut self) {
         let f = Rc::new(RefCell::new(None));
