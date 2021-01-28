@@ -33,4 +33,5 @@ features = [
   "WebSocket",
   "CanvasRenderingContext2d",
   "HtmlCanvasElement",
+  "HtmlImageElement"
 ]

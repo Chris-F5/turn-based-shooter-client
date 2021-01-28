@@ -1,6 +1,7 @@
-mod canvas;
+mod graphics;
 mod networking;
 
+use graphics::GraphicsContext;
 use log::{error, info, trace, warn};
 use networking::ServerConnection;
 use std::cell::RefCell;
@@ -20,7 +21,7 @@ pub fn run() {
 
 struct Game {
     server_connection: ServerConnection,
-    canvas: canvas::Canvas,
+    graphics_ctx: GraphicsContext,
 }
 impl Game {
     fn init() -> Game {
@@ -28,7 +29,7 @@ impl Game {
         server_connection.send(ClientPacket::Test(TestRequest::new("bob".to_string())));
         Game {
             server_connection,
-            canvas: canvas::Canvas::new("canvas"),
+            graphics_ctx: GraphicsContext::new("canvas"),
         }
     }
     fn update(&mut self) {
@@ -43,8 +44,11 @@ impl Game {
         }
     }
     fn draw(&mut self) {
-        self.canvas.clear();
-        self.canvas.test_draw();
+        self.graphics_ctx.clear();
+        self.graphics_ctx.draw_tile(&graphics::TilePos::new(0, 0));
+        self.graphics_ctx.draw_tile(&graphics::TilePos::new(1, 0));
+        self.graphics_ctx.draw_tile(&graphics::TilePos::new(2, 0));
+        self.graphics_ctx.draw_tile(&graphics::TilePos::new(1, 1));
     }
     fn game_loop(&mut self) {
         self.update();
