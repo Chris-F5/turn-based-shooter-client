@@ -1,4 +1,5 @@
-use super::{ScreenPos, ScreenRect, TilePos, WorldPos};
+use super::{ScreenPos, ScreenRect};
+use crate::{TilePos, WorldPos};
 
 pub struct IsoCamera {
     tile_pixel_width: u32,

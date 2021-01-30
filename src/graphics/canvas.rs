@@ -1,9 +1,9 @@
+use super::Image;
 use super::ScreenRect;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::CanvasRenderingContext2d;
 use web_sys::HtmlCanvasElement;
-use web_sys::HtmlImageElement;
 
 pub struct Canvas {
     canvas: HtmlCanvasElement,
@@ -32,7 +32,7 @@ impl Canvas {
 
         Canvas { canvas, ctx }
     }
-    pub fn draw_image(&mut self, image: &HtmlImageElement, rect: &ScreenRect) {
+    pub fn draw_image(&mut self, image: &Image, rect: &ScreenRect) {
         self.ctx
             .draw_image_with_html_image_element_and_dw_and_dh(
                 image,

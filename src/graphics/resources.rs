@@ -1,19 +1,22 @@
-type Image = web_sys::HtmlImageElement;
+use super::Image;
+use turn_based_shooter_shared::map::TileAppearance;
 
 pub struct GraphicsResources {
-    tile: Image,
+    test_tile: Image,
 }
 
 impl GraphicsResources {
     pub fn new() -> GraphicsResources {
         GraphicsResources {
-            tile: Image::new().unwrap(),
+            test_tile: Image::new().unwrap(),
         }
     }
     pub fn load(&mut self) {
-        self.tile.set_src("tile.png");
+        self.test_tile.set_src("tile.png");
     }
-    pub fn get_tile(&mut self) -> &Image {
-        &self.tile
+    pub fn get_tile_image(&mut self, tile: &TileAppearance) -> &Image {
+        match tile {
+            TileAppearance::TestWhite => &self.test_tile,
+        }
     }
 }

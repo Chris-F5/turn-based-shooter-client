@@ -3,11 +3,14 @@ mod canvas;
 mod resources;
 mod util;
 
-pub use util::{ScreenPos, ScreenRect, TilePos, WorldPos};
+pub use util::{ScreenPos, ScreenRect};
+pub type Image = web_sys::HtmlImageElement;
 
+use crate::TilePos;
 use camera::IsoCamera;
 use canvas::Canvas;
 use resources::GraphicsResources;
+use turn_based_shooter_shared::map::TileAppearance;
 
 pub struct GraphicsContext {
     camera: IsoCamera,
@@ -28,9 +31,9 @@ impl GraphicsContext {
     pub fn clear(&mut self) {
         self.canvas.clear();
     }
-    pub fn draw_tile(&mut self, pos: &TilePos) {
-        let tile = self.resources.get_tile();
+    pub fn draw_tile(&mut self, pos: &TilePos, appearance: &TileAppearance) {
+        let tile_image = self.resources.get_tile_image(appearance);
         let rect = self.camera.tile_screen_rect(pos);
-        self.canvas.draw_image(tile, &rect);
+        self.canvas.draw_image(tile_image, &rect);
     }
 }

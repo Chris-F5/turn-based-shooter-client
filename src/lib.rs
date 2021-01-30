@@ -1,13 +1,18 @@
+mod battle;
 mod graphics;
 mod networking;
 
+use battle::Battle;
 use graphics::GraphicsContext;
 use log::{error, info, trace, warn};
 use networking::ServerConnection;
 use std::cell::RefCell;
 use std::panic;
 use std::rc::Rc;
-use turn_based_shooter_shared::{ClientPacket, ServerPacket, TestRequest};
+use turn_based_shooter_shared::{
+    map::{TilePos, WorldPos},
+    ClientPacket, ServerPacket, TestRequest,
+};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -22,12 +27,15 @@ pub fn run() {
 struct Game {
     server_connection: ServerConnection,
     graphics_ctx: GraphicsContext,
+    battle: Option<Battle>,
 }
 impl Game {
     fn init() -> Game {
         let mut server_connection = ServerConnection::new();
         server_connection.send(ClientPacket::Test(TestRequest::new("bob".to_string())));
+        server_connection.send(ClientPacket::RequestBattle);
         Game {
+            battle: None,
             server_connection,
             graphics_ctx: GraphicsContext::new("canvas"),
         }
@@ -40,15 +48,18 @@ impl Game {
                     "received message {}: {}",
                     test_packet.number, test_packet.message
                 ),
+                ServerPacket::NewBattle(map) => {
+                    info!("received new battle packet");
+                    self.battle = Some(Battle::new(map))
+                }
             }
         }
     }
     fn draw(&mut self) {
         self.graphics_ctx.clear();
-        self.graphics_ctx.draw_tile(&graphics::TilePos::new(0, 0));
-        self.graphics_ctx.draw_tile(&graphics::TilePos::new(1, 0));
-        self.graphics_ctx.draw_tile(&graphics::TilePos::new(2, 0));
-        self.graphics_ctx.draw_tile(&graphics::TilePos::new(1, 1));
+        if let Some(battle) = &mut self.battle {
+            battle.draw(&mut self.graphics_ctx);
+        }
     }
     fn game_loop(&mut self) {
         self.update();

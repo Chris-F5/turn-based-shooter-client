@@ -10,31 +10,6 @@ impl ScreenPos {
 }
 
 #[derive(Clone, Debug)]
-pub struct WorldPos {
-    pub x: f64,
-    pub y: f64,
-}
-impl WorldPos {
-    pub fn new(x: f64, y: f64) -> WorldPos {
-        WorldPos { x, y }
-    }
-}
-
-#[derive(Clone, Debug)]
-pub struct TilePos {
-    pub x: u32,
-    pub y: u32,
-}
-impl TilePos {
-    pub fn new(x: u32, y: u32) -> TilePos {
-        TilePos { x, y }
-    }
-    pub fn world_pos(&self) -> WorldPos {
-        WorldPos::new(self.x as f64, self.y as f64)
-    }
-}
-
-#[derive(Clone, Debug)]
 pub struct ScreenRect {
     pub x_pos: f64,
     pub y_pos: f64,
