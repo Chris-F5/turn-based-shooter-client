@@ -36,4 +36,7 @@ impl GraphicsContext {
         let rect = self.camera.tile_screen_rect(pos);
         self.canvas.draw_image(tile_image, &rect);
     }
+    pub fn camera(&mut self) -> &mut IsoCamera {
+        &mut self.camera
+    }
 }

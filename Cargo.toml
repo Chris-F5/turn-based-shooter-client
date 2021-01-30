@@ -33,5 +33,7 @@ features = [
   "WebSocket",
   "CanvasRenderingContext2d",
   "HtmlCanvasElement",
-  "HtmlImageElement"
+  "HtmlImageElement",
+  "EventListener",
+  "KeyboardEvent"
 ]

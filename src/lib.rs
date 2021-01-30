@@ -1,9 +1,11 @@
 mod battle;
 mod graphics;
+mod input;
 mod networking;
 
 use battle::Battle;
 use graphics::GraphicsContext;
+use input::Input;
 use log::{error, info, trace, warn};
 use networking::ServerConnection;
 use std::cell::RefCell;
@@ -25,23 +27,25 @@ pub fn run() {
 }
 
 struct Game {
+    input: Input,
     server_connection: ServerConnection,
     graphics_ctx: GraphicsContext,
     battle: Option<Battle>,
 }
 impl Game {
     fn init() -> Game {
+        let input = Input::new();
         let mut server_connection = ServerConnection::new();
         server_connection.send(ClientPacket::Test(TestRequest::new("bob".to_string())));
         server_connection.send(ClientPacket::RequestBattle);
         Game {
+            input,
             battle: None,
             server_connection,
             graphics_ctx: GraphicsContext::new("canvas"),
         }
     }
     fn update(&mut self) {
-        trace!("update");
         while let Some(server_packet) = self.server_connection.try_recv() {
             match server_packet {
                 ServerPacket::Test(test_packet) => info!(
@@ -53,6 +57,23 @@ impl Game {
                     self.battle = Some(Battle::new(map))
                 }
             }
+        }
+
+        if self.input.up_arrow() {
+            self.graphics_ctx.camera().position().y += 0.1;
+            self.graphics_ctx.camera().position().x -= 0.1;
+        }
+        if self.input.down_arrow() {
+            self.graphics_ctx.camera().position().y -= 0.1;
+            self.graphics_ctx.camera().position().x += 0.1;
+        }
+        if self.input.right_arrow() {
+            self.graphics_ctx.camera().position().x += 0.1;
+            self.graphics_ctx.camera().position().y += 0.1;
+        }
+        if self.input.left_arrow() {
+            self.graphics_ctx.camera().position().x -= 0.1;
+            self.graphics_ctx.camera().position().y -= 0.1;
         }
     }
     fn draw(&mut self) {
