@@ -2,21 +2,25 @@ use super::Image;
 use turn_based_shooter_shared::map::TileAppearance;
 
 pub struct GraphicsResources {
-    test_tile: Image,
+    white_tile: Image,
+    black_tile: Image,
 }
 
 impl GraphicsResources {
     pub fn new() -> GraphicsResources {
         GraphicsResources {
-            test_tile: Image::new().unwrap(),
+            white_tile: Image::new().unwrap(),
+            black_tile: Image::new().unwrap(),
         }
     }
     pub fn load(&mut self) {
-        self.test_tile.set_src("tile.png");
+        self.white_tile.set_src("white_tile.png");
+        self.black_tile.set_src("black_tile.png");
     }
     pub fn get_tile_image(&mut self, tile: &TileAppearance) -> &Image {
         match tile {
-            TileAppearance::TestWhite => &self.test_tile,
+            TileAppearance::TestWhite => &self.white_tile,
+            TileAppearance::TestBlack => &self.black_tile,
         }
     }
 }
