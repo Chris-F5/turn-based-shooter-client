@@ -5,11 +5,38 @@
     <meta charset="UTF-8">
     <title>index.html</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        html,
+        body {
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </head>
 
 <body>
     <canvas id="canvas"></canvas>
     <script type="module" src="main.js"></script>
+    <script>
+        // Disable scrolling with keys
+        window.addEventListener("keydown", function (e) {
+            // space, page up, page down and arrow keys:
+            if ([32, 33, 34, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+                e.preventDefault();
+            }
+        }, false);
+
+        // Make canvas fill screen
+        function setCanvasSize() {
+            canvas = document.getElementById("canvas");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.getContext('2d').imageSmoothingEnabled = false;
+        }
+        setCanvasSize();
+        window.onresize = setCanvasSize;
+    </script>
 </body>
 
 </html>

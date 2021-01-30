@@ -19,9 +19,6 @@ impl Canvas {
             .dyn_into::<web_sys::HtmlCanvasElement>()
             .unwrap();
 
-        canvas.set_width(window.inner_width().unwrap().as_f64().unwrap() as u32);
-        canvas.set_height(window.inner_height().unwrap().as_f64().unwrap() as u32);
-
         let ctx = canvas
             .get_context("2d")
             .unwrap()
