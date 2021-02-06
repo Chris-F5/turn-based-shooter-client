@@ -11,7 +11,7 @@ struct KeyboardState {
     left_arrow: bool,
 }
 impl KeyboardState {
-    pub fn all_down() -> KeyboardState {
+    pub fn all_up() -> KeyboardState {
         KeyboardState {
             up_arrow: false,
             down_arrow: false,
@@ -37,7 +37,7 @@ impl Input {
     pub fn new() -> Input {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
-        let keyboard_state = Rc::new(RefCell::new(KeyboardState::all_down()));
+        let keyboard_state = Rc::new(RefCell::new(KeyboardState::all_up()));
 
         let keyboard_state_clone = keyboard_state.clone();
         let key_down_handler = Closure::wrap(Box::new(move |event: JsValue| {
