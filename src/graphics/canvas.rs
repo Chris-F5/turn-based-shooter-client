@@ -1,6 +1,5 @@
 use super::Image;
 use super::ScreenRect;
-use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::CanvasRenderingContext2d;
 use web_sys::HtmlCanvasElement;

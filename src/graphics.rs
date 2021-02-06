@@ -6,11 +6,10 @@ mod util;
 pub use util::{ScreenPos, ScreenRect};
 pub type Image = web_sys::HtmlImageElement;
 
-use crate::TilePos;
 use camera::IsoCamera;
 use canvas::Canvas;
 use resources::GraphicsResources;
-use turn_based_shooter_shared::map::TileAppearance;
+use turn_based_shooter_shared::battle::{map::TileAppearance, TilePos};
 
 pub struct GraphicsContext {
     camera: IsoCamera,
@@ -35,6 +34,16 @@ impl GraphicsContext {
         let tile_image = self.resources.get_tile_image(appearance);
         let rect = self.camera.tile_screen_rect(pos);
         self.canvas.draw_image(tile_image, &rect);
+    }
+    pub fn draw_white_dot(&mut self, pos: &TilePos) {
+        let image = self.resources.white_dot();
+        let rect = self.camera.tile_screen_rect(pos);
+        self.canvas.draw_image(image, &rect);
+    }
+    pub fn draw_black_dot(&mut self, pos: &TilePos) {
+        let image = self.resources.black_dot();
+        let rect = self.camera.tile_screen_rect(pos);
+        self.canvas.draw_image(image, &rect);
     }
     pub fn camera(&mut self) -> &mut IsoCamera {
         &mut self.camera

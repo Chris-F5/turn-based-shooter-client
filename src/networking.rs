@@ -1,4 +1,4 @@
-use log::{error, info, trace, warn};
+use log::{error, info, warn};
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::rc::Rc;

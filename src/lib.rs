@@ -1,20 +1,17 @@
-mod battle;
+mod battle_client;
 mod graphics;
 mod input;
 mod networking;
 
-use battle::Battle;
+use battle_client::BattleClient;
 use graphics::GraphicsContext;
 use input::Input;
-use log::{error, info, trace, warn};
+use log::{error, info};
 use networking::ServerConnection;
 use std::cell::RefCell;
 use std::panic;
 use std::rc::Rc;
-use turn_based_shooter_shared::{
-    map::{TilePos, WorldPos},
-    ClientPacket, ServerPacket, TestRequest,
-};
+use turn_based_shooter_shared::{ClientPacket, ServerPacket, TestRequest};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -30,17 +27,17 @@ struct Game {
     input: Input,
     server_connection: ServerConnection,
     graphics_ctx: GraphicsContext,
-    battle: Option<Battle>,
+    battle_client: Option<BattleClient>,
 }
 impl Game {
     fn init() -> Game {
         let input = Input::new();
         let mut server_connection = ServerConnection::new();
         server_connection.send(ClientPacket::Test(TestRequest::new("bob".to_string())));
-        server_connection.send(ClientPacket::RequestBattle);
+        server_connection.send(ClientPacket::JoinBattleMatchmaker);
         Game {
             input,
-            battle: None,
+            battle_client: None,
             server_connection,
             graphics_ctx: GraphicsContext::new("canvas"),
         }
@@ -52,9 +49,16 @@ impl Game {
                     "received message {}: {}",
                     test_packet.number, test_packet.message
                 ),
-                ServerPacket::NewBattle(map) => {
-                    info!("received new battle packet");
-                    self.battle = Some(Battle::new(map))
+                ServerPacket::BattleStart(battle_info) => {
+                    info!("received battle start packet");
+                    if self.battle_client.is_none() {
+                        self.battle_client = Some(BattleClient::new(battle_info))
+                    } else {
+                        error!("cant start battle when already in battle");
+                    }
+                }
+                ServerPacket::BattleInfoUpdate(_battle_info_update) => {
+                    info!("received battle info update packet");
                 }
             }
         }
@@ -78,8 +82,8 @@ impl Game {
     }
     fn draw(&mut self) {
         self.graphics_ctx.clear();
-        if let Some(battle) = &mut self.battle {
-            battle.draw(&mut self.graphics_ctx);
+        if let Some(battle_client) = &mut self.battle_client {
+            battle_client.draw(&mut self.graphics_ctx);
         }
     }
     fn game_loop(&mut self) {

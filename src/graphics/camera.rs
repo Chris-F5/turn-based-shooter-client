@@ -1,6 +1,5 @@
 use super::{ScreenPos, ScreenRect};
-use crate::{TilePos, WorldPos};
-use log::debug;
+use turn_based_shooter_shared::battle::{TilePos, WorldPos};
 
 pub struct IsoCamera {
     position: WorldPos,
@@ -33,9 +32,16 @@ impl IsoCamera {
     pub fn world_to_screen(&self, world_pos: &WorldPos) -> ScreenPos {
         let rel_world_x = world_pos.x - self.position.x;
         let rel_world_y = world_pos.y - self.position.y;
-        let x = (rel_world_y + rel_world_x) * self.tile_width / 2.0;
-        let y = (rel_world_y - rel_world_x) * self.tile_width / -4.0;
-        ScreenPos::new(x, y)
+        let screen_x = (rel_world_y + rel_world_x) * self.tile_width / 2.0;
+        let screen_y = (rel_world_y - rel_world_x) * self.tile_width / -4.0;
+        ScreenPos::new(screen_x, screen_y)
+    }
+    pub fn screen_to_world(&self, screen_pos: &ScreenPos) -> WorldPos {
+        let rel_world_x = (-2.0 * screen_pos.y + screen_pos.x) / self.tile_width;
+        let rel_world_y = (-2.0 * screen_pos.y + screen_pos.x) / self.tile_width;
+        let world_x = rel_world_x + self.position.x;
+        let world_y = rel_world_y + self.position.y;
+        WorldPos::new(world_x, world_y)
     }
     pub fn tile_screen_rect(&self, tile_pos: &TilePos) -> ScreenRect {
         let screen_pos = self.world_to_screen(&tile_pos.world_pos());
